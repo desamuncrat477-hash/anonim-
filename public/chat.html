@@ -1,427 +1,474 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Anonymous Chat</title>
+<title>YOU GOT PRANKED</title>
 
 <style>
-
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
-
-    margin: 0;
-
     min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at top left,
-            #312e81,
-            transparent 35%
-        ),
-        #070b16;
-
-    color: white;
-
-    font-family:
-        Inter,
-        system-ui,
-        sans-serif;
-
+    overflow: hidden;
+    background: #000;
+    color: #00ff66;
+    font-family: "Courier New", monospace;
     display: flex;
-
-    justify-content: center;
-
     align-items: center;
-
-    padding: 15px;
+    justify-content: center;
 }
 
+/* Background */
 
-.chat {
-
-    width: min(900px, 100%);
-
-    height: min(700px, 90vh);
-
-    display: flex;
-
-    flex-direction: column;
-
+.matrix {
+    position: fixed;
+    inset: 0;
     overflow: hidden;
+    z-index: 0;
+    opacity: .18;
+}
 
-    border:
-        1px solid
-        rgba(255,255,255,.1);
+.matrix span {
+    position: absolute;
+    top: -100px;
+    color: #00ff66;
+    font-size: 15px;
+    writing-mode: vertical-rl;
+    animation: fall linear infinite;
+}
 
-    border-radius: 24px;
+.matrix span:nth-child(1) { left: 3%; animation-duration: 5s; }
+.matrix span:nth-child(2) { left: 10%; animation-duration: 7s; }
+.matrix span:nth-child(3) { left: 18%; animation-duration: 4s; }
+.matrix span:nth-child(4) { left: 27%; animation-duration: 8s; }
+.matrix span:nth-child(5) { left: 35%; animation-duration: 6s; }
+.matrix span:nth-child(6) { left: 44%; animation-duration: 5s; }
+.matrix span:nth-child(7) { left: 52%; animation-duration: 9s; }
+.matrix span:nth-child(8) { left: 61%; animation-duration: 6s; }
+.matrix span:nth-child(9) { left: 70%; animation-duration: 4s; }
+.matrix span:nth-child(10) { left: 79%; animation-duration: 7s; }
+.matrix span:nth-child(11) { left: 88%; animation-duration: 5s; }
+.matrix span:nth-child(12) { left: 96%; animation-duration: 8s; }
+
+@keyframes fall {
+    from {
+        transform: translateY(-120px);
+    }
+    to {
+        transform: translateY(110vh);
+    }
+}
+
+/* Scanline */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
 
     background:
-        rgba(15,23,42,.86);
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,.025) 0px,
+            rgba(255,255,255,.025) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
 
-    backdrop-filter:
-        blur(20px);
+/* Main */
+
+.container {
+    position: relative;
+    z-index: 5;
+    width: min(92%, 700px);
+    text-align: center;
+}
+
+/* Hacker box */
+
+.box {
+    position: relative;
+    padding: 35px 25px;
+    border: 1px solid #00ff66;
+    background: rgba(0, 15, 5, .88);
 
     box-shadow:
-        0 30px 90px
-        rgba(0,0,0,.45);
+        0 0 15px rgba(0,255,102,.3),
+        inset 0 0 30px rgba(0,255,102,.06);
 
+    animation: flicker 4s infinite;
 }
 
+@keyframes flicker {
+    0%, 95%, 100% {
+        opacity: 1;
+    }
 
-.header {
+    96% {
+        opacity: .85;
+    }
 
-    padding: 18px 22px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.08);
-
+    97% {
+        opacity: 1;
+    }
 }
 
-
-.identity {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
+.warning {
+    font-size: 13px;
+    letter-spacing: 4px;
+    margin-bottom: 18px;
 }
 
+/* Title */
 
-.avatar {
+.glitch {
+    position: relative;
+    display: inline-block;
 
-    width: 44px;
-    height: 44px;
+    font-family: Arial, sans-serif;
+    font-weight: 900;
+    font-size: clamp(35px, 8vw, 72px);
 
-    display: grid;
+    line-height: 1;
+    color: #fff;
 
-    place-items: center;
+    text-shadow:
+        3px 0 #ff003c,
+        -3px 0 #00ffff;
 
-    border-radius: 50%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #6366f1,
-            #8b5cf6
-        );
-
+    animation: glitch 1.8s infinite;
 }
 
+@keyframes glitch {
 
-.name {
+    0%,
+    85%,
+    100% {
+        transform: translate(0);
+    }
 
-    font-weight: 700;
+    86% {
+        transform: translate(-3px, 2px);
+    }
 
+    87% {
+        transform: translate(3px, -2px);
+    }
+
+    88% {
+        transform: translate(-2px, 0);
+    }
 }
 
+/* Finger */
 
-.online {
+.finger {
+    margin: 28px auto 22px;
 
-    color: #22c55e;
+    font-family: Arial, sans-serif;
+    font-size: clamp(100px, 25vw, 190px);
 
-    font-size: 12px;
+    line-height: 1;
 
+    filter:
+        drop-shadow(0 0 10px rgba(255,255,255,.15))
+        drop-shadow(0 0 25px rgba(0,255,102,.2));
+
+    animation:
+        fingerFloat 2.5s ease-in-out infinite,
+        fingerShake 4s infinite;
 }
 
+@keyframes fingerFloat {
 
-.messages {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
 
-    flex: 1;
-
-    overflow-y: auto;
-
-    padding: 24px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-
+    50% {
+        transform: translateY(-8px);
+    }
 }
 
+@keyframes fingerShake {
+
+    0%,
+    90%,
+    100% {
+        rotate: 0deg;
+    }
+
+    92% {
+        rotate: -4deg;
+    }
+
+    94% {
+        rotate: 4deg;
+    }
+
+    96% {
+        rotate: -2deg;
+    }
+}
+
+/* Message */
 
 .message {
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
 
-    max-width: 75%;
-
-    padding: 12px 15px;
-
-    border-radius: 17px;
-
+.sub {
+    color: #8cffb8;
     font-size: 14px;
-
-    line-height: 1.5;
-
+    line-height: 1.7;
 }
 
+/* Terminal */
 
-.received {
-
-    align-self: flex-start;
-
-    background:
-        rgba(255,255,255,.08);
-
-}
-
-
-.sent {
-
-    align-self: flex-end;
-
-    background:
-        linear-gradient(
-            135deg,
-            #6366f1,
-            #8b5cf6
-        );
-
-}
-
-
-.input-area {
-
-    display: flex;
-
-    gap: 10px;
+.terminal {
+    margin: 25px auto 0;
+    text-align: left;
+    max-width: 500px;
 
     padding: 15px;
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.08);
+    border: 1px solid rgba(0,255,102,.25);
+    background: rgba(0,0,0,.65);
 
+    color: #00ff66;
+    font-size: 12px;
+    line-height: 1.7;
 }
 
-
-input {
-
-    flex: 1;
-
-    min-width: 0;
-
-    padding: 14px 16px;
-
-    border: 0;
-
-    outline: none;
-
-    border-radius: 14px;
-
-    background:
-        rgba(255,255,255,.07);
-
-    color: white;
-
+.prompt {
+    color: #fff;
 }
 
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    background: #00ff66;
+    animation: blink .8s infinite;
+    vertical-align: middle;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Button */
 
 button {
+    margin-top: 22px;
 
-    padding:
-        0 22px;
+    padding: 13px 25px;
 
-    border: 0;
+    border: 1px solid #00ff66;
+    background: transparent;
 
-    border-radius: 14px;
+    color: #00ff66;
 
-    background:
-        linear-gradient(
-            135deg,
-            #6366f1,
-            #8b5cf6
-        );
-
-    color: white;
-
-    font-weight: 700;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
 
     cursor: pointer;
 
+    transition: .2s;
 }
 
+button:hover {
+    background: #00ff66;
+    color: #000;
 
-@media(max-width:600px) {
+    box-shadow:
+        0 0 20px rgba(0,255,102,.6);
+}
 
-    .chat {
+/* Footer */
 
-        height: 94vh;
+.footer {
+    margin-top: 18px;
+    color: #4d8b61;
+    font-size: 10px;
+}
 
-        border-radius: 18px;
+/* Mobile */
 
+@media (max-width: 500px) {
+
+    .box {
+        padding: 28px 17px;
+    }
+
+    .warning {
+        font-size: 10px;
+        letter-spacing: 2px;
     }
 
     .message {
-
-        max-width: 85%;
-
+        font-size: 17px;
     }
 
+    .terminal {
+        font-size: 10px;
+    }
 }
-
 </style>
-
 </head>
 
 <body>
 
+<!-- Matrix -->
 
-<div class="chat">
+<div class="matrix">
 
-    <header class="header">
+    <span>010101101001011010101</span>
+    <span>101010010101110100101</span>
+    <span>001011010110101001101</span>
+    <span>110100101011010010101</span>
+    <span>010101101010010110101</span>
+    <span>101101010101101001010</span>
+    <span>011010101101010101011</span>
+    <span>101010110100101010101</span>
+    <span>001010101101010110100</span>
+    <span>110101010010101101010</span>
+    <span>010101101010101010101</span>
+    <span>101010101101001010101</span>
 
-        <div class="identity">
+</div>
 
-            <div class="avatar">
-                👤
+
+<div class="container">
+
+    <div class="box">
+
+        <div class="warning">
+            SYSTEM MESSAGE // 0x1337
+        </div>
+
+        <div class="glitch">
+            TOBAT KIRIK!
+        </div>
+
+        <!-- Ilustrasi jari tengah -->
+        <div class="finger">
+            🖕
+        </div>
+
+        <div class="message">
+          
+        </div>
+
+        <div class="sub">
+            وَلَا تَقْرَبُوا الزِّنٰىٓ اِنَّهٗ كَانَ فَاحِشَةً ۗوَسَاۤءَ سَبِيْلًا<br>
+            "Dan janganlah kamu mendekati zina; (zina) itu sungguh suatu perbuatan keji, dan suatu jalan yang buruk."
+        </div>
+
+
+        <div class="terminal">
+
+            <div>
+                <span class="prompt">root@anonymous:~$</span>
+                mengakses kamera
             </div>
 
             <div>
+                <span class="prompt">root@anonymous:~$</span>
+                foto didapatkan.
+                <b>[OK]</b>
+            </div>
 
-                <div class="name">
-                    Anonymous
-                </div>
+            <div>
+                <span class="prompt">root@anonymous:~$</span>
+                kirim foto: SUCCESS
+            </div>
 
-                <div class="online">
-                    ● Online
-                </div>
+            <div>
+                <span class="prompt">root@anonymous:~$</span>
+                lokasi target diketahui
+            </div>
 
+            <div>
+                <span class="prompt">root@anonymous:~$</span>
+                <span class="cursor"></span>
             </div>
 
         </div>
 
-        <div>
-            🔒
-        </div>
 
-    </header>
-
-
-    <main
-        id="messages"
-        class="messages"
-    >
-
-        <div class="message received">
-
-            Selamat datang di Anonymous Chat 👋
-
-        </div>
-
-        <div class="message received">
-
-            Kamu sekarang terhubung dengan pengguna anonim.
-
-        </div>
-
-    </main>
-
-
-    <form
-        id="chatForm"
-        class="input-area"
-    >
-
-        <input
-            id="messageInput"
-            autocomplete="off"
-            placeholder="Tulis pesan..."
-        >
-
-        <button type="submit">
-            Kirim
+        <button onclick="location.reload()">
+            🔄 COBA LAGI
         </button>
 
-    </form>
+
+        <div class="footer">
+            Anonymous Prank System • Just For Fun
+        </div>
+
+    </div>
 
 </div>
 
 
 <script>
 
-const form =
-    document.getElementById(
-        "chatForm"
-    );
+/* Random matrix characters */
 
-const input =
-    document.getElementById(
-        "messageInput"
-    );
+const chars =
+    "010101001101011010101001101010101";
 
-const messages =
-    document.getElementById(
-        "messages"
-    );
+document
+    .querySelectorAll(".matrix span")
+    .forEach(el => {
 
+        let text = "";
 
-form.addEventListener(
-    "submit",
-    (event) => {
+        for (let i = 0; i < 25; i++) {
 
-        event.preventDefault();
+            text += chars[
+                Math.floor(
+                    Math.random() * chars.length
+                )
+            ];
 
-
-        const text =
-            input.value.trim();
-
-
-        if (!text) {
-            return;
         }
 
+        el.textContent = text;
 
-        const message =
-            document.createElement(
-                "div"
-            );
+    });
 
 
-        message.className =
-            "message sent";
+/* Console prank */
 
-
-        message.textContent =
-            text;
-
-
-        messages.appendChild(
-            message
-        );
-
-
-        input.value = "";
-
-
-        messages.scrollTop =
-            messages.scrollHeight;
-
-    }
+console.log(
+    "%c SELAMAT! ANDA KENA PRANK 😂",
+    "font-size:25px;color:#00ff66;font-weight:bold;"
 );
 
 </script>
 
-
 </body>
-
 </html>
